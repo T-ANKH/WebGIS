@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>地图MCP服务测试</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    input, button { padding: 8px; margin: 4px; }
+    pre { background: #f5f5f5; padding: 12px; border-radius: 6px; white-space: pre-wrap; }
+    h3 { color: #333; border-bottom: 2px solid #e74c3c; padding-bottom: 4px; }
+  </style>
+</head>
+<body>
+  <h2>🗺️ 地图MCP服务测试</h2>
+
+  <h3>地理编码</h3>
+  <input id="addr" placeholder="输入地址，如：厦门大学" style="width:300px">
+  <button onclick="geocode()">查询坐标</button>
+  <pre id="geocode-result"></pre>
+
+  <h3>POI搜索</h3>
+  <input id="kw" placeholder="关键词，如：海鲜餐厅">
+  <input id="city" placeholder="城市，如：厦门">
+  <button onclick="poi()">搜索</button>
+  <pre id="poi-result"></pre>
+
+  <h3>路径规划</h3>
+  <input id="from" placeholder="出发地">
+  <input id="to" placeholder="目的地">
+  <button onclick="route()">规划路线</button>
+  <pre id="route-result"></pre>
+
+  <script>
+    const BASE = 'http://localhost:8000';
+
+    async function geocode() {
+      const addr = document.getElementById('addr').value;
+      const res = await fetch(`${BASE}/api/geocode?address=${encodeURIComponent(addr)}`);
+      document.getElementById('geocode-result').textContent = JSON.stringify(await res.json(), null, 2);
+    }
+
+    async function poi() {
+      const kw = document.getElementById('kw').value;
+      const city = document.getElementById('city').value;
+      const res = await fetch(`${BASE}/api/poi?keywords=${encodeURIComponent(kw)}&city=${encodeURIComponent(city)}`);
+      document.getElementById('poi-result').textContent = JSON.stringify(await res.json(), null, 2);
+    }
+
+    async function route() {
+      const from = document.getElementById('from').value;
+      const to = document.getElementById('to').value;
+      const res = await fetch(`${BASE}/api/route?origin=${encodeURIComponent(from)}&destination=${encodeURIComponent(to)}`);
+      document.getElementById('route-result').textContent = JSON.stringify(await res.json(), null, 2);
+    }
+  </script>
+</body>
+</html>
